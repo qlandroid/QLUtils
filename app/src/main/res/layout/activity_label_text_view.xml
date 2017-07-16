@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_label_text_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="com.ql.utils.qlutils.LabelTextViewActivity">
+
+
+    <LinearLayout
+        android:layout_marginTop="10dp"
+        android:background="#fff"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:paddingTop="6dp"
+        android:paddingBottom="6dp"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:paddingLeft="6dp"
+            android:paddingRight="6dp"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.ql.view.LabelTextView
+                app:labelText="等级"
+                app:text="15"
+                app:textMarginLeft="16dp"
+                app:symbolTextMarginLeft="4dp"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"/>
+
+            <com.ql.view.LabelTextView
+                app:labelColor="#00f"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                app:labelText="技能"
+                app:textColor="#0f0"
+                app:text="未知" />
+    </LinearLayout>
+    </LinearLayout>
+</LinearLayout>
