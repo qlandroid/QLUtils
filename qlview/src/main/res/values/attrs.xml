@@ -20,4 +20,9 @@
         <attr name="border_inside_color" format="color" />
         <attr name="border_outside_color" format="color"/>
     </declare-styleable>
+
+    <declare-styleable name="TagGroupView">
+        <attr name="divHeight" format="dimension"/>
+        <attr name="rowWidth" format="dimension"/>
+    </declare-styleable>
 </resources>

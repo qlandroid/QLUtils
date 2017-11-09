@@ -1,13 +1,7 @@
 package com.ql.utils.qlutils;
 
-import android.app.ListActivity;
-import android.os.PersistableBundle;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.support.v7.view.menu.ExpandedMenuView;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.ql.view.adapter.CommonAdapter;
@@ -59,7 +53,7 @@ public class MainActivity extends QLActivity {
     private void addActivity() {
         atyList.add(new AtyBean(SystemBarActivity.class));
         atyList.add(new AtyBean(NavActivity.class));
-
+        atyList.add(new AtyBean(TagGroupLayoutActivity.class));
 
 
     }

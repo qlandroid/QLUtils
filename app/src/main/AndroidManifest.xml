@@ -17,6 +17,7 @@
         </activity>
         <activity android:name=".SystemBarActivity" />
         <activity android:name=".NavActivity" />
+        <activity android:name=".TagGroupLayoutActivity" />
         <activity android:name=".LabelTextViewActivity"></activity>
     </application>
 
