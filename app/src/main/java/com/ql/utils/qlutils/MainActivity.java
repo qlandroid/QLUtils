@@ -4,6 +4,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.ql.view.AutoTextView;
 import com.ql.view.adapter.CommonAdapter;
 import com.ql.view.base.QLActivity;
 import com.ql.view.bind.BindView;
@@ -54,6 +55,7 @@ public class MainActivity extends QLActivity {
         atyList.add(new AtyBean(SystemBarActivity.class));
         atyList.add(new AtyBean(NavActivity.class));
         atyList.add(new AtyBean(TagGroupLayoutActivity.class));
+        atyList.add(new AtyBean(AutoTextActivity.class));
 
 
     }

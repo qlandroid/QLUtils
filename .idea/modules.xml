@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/QLUtils.iml" filepath="$PROJECT_DIR$/QLUtils.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/qlview/qlview.iml" filepath="$PROJECT_DIR$/qlview/qlview.iml" />
+      <module fileurl="file://$PROJECT_DIR$/rvlibrary/rvlibrary.iml" filepath="$PROJECT_DIR$/rvlibrary/rvlibrary.iml" />
     </modules>
   </component>
 </project>
