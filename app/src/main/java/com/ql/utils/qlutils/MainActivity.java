@@ -56,6 +56,7 @@ public class MainActivity extends QLActivity {
         atyList.add(new AtyBean(NavActivity.class));
         atyList.add(new AtyBean(TagGroupLayoutActivity.class));
         atyList.add(new AtyBean(AutoTextActivity.class));
+        atyList.add(new AtyBean(RecyclerViewActivity.class));
 
 
     }

@@ -35,6 +35,5 @@ dependencies {
     compile project(':qlview')
     //RecyclerView的适配器
     //http://www.jianshu.com/p/b343fcff51b0
-    compile 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.30'
 
 }
