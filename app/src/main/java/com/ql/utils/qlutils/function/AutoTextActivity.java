@@ -1,5 +1,6 @@
-package com.ql.utils.qlutils;
+package com.ql.utils.qlutils.function;
 
+import com.ql.utils.qlutils.R;
 import com.ql.view.AutoTextView;
 import com.ql.view.base.QLActivity;
 

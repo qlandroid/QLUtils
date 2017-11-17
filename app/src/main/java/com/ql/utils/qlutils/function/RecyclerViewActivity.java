@@ -1,4 +1,4 @@
-package com.ql.utils.qlutils;
+package com.ql.utils.qlutils.function;
 
 import android.graphics.Color;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -6,6 +6,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.ql.utils.qlutils.R;
 import com.ql.view.base.QLActivity;
 import com.ql.view.bind.BindView;
 import com.ql.view.rv.BaseQuickAdapter;

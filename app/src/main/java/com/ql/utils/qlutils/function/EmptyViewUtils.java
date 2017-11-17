@@ -1,4 +1,4 @@
-package com.ql.utils.qlutils;
+package com.ql.utils.qlutils.function;
 
 import android.view.View;
 

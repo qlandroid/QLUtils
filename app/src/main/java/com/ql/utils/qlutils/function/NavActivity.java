@@ -1,9 +1,10 @@
-package com.ql.utils.qlutils;
+package com.ql.utils.qlutils.function;
 
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import com.ql.utils.qlutils.R;
 import com.ql.utils.qlutils.frag.NavFragment;
 import com.ql.view.NavigationGroupView;
 import com.ql.view.base.QLActivity;

@@ -1,4 +1,4 @@
-package com.ql.utils.qlutils;
+package com.ql.utils.qlutils.function;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;

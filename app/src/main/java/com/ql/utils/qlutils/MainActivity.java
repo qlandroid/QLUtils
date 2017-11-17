@@ -4,7 +4,13 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import com.ql.view.AutoTextView;
+import com.ql.utils.qlutils.function.AutoTextActivity;
+import com.ql.utils.qlutils.function.DataPickerActivity;
+import com.ql.utils.qlutils.function.HartViewActivity;
+import com.ql.utils.qlutils.function.NavActivity;
+import com.ql.utils.qlutils.function.RecyclerViewActivity;
+import com.ql.utils.qlutils.function.SystemBarActivity;
+import com.ql.utils.qlutils.function.TagGroupLayoutActivity;
 import com.ql.view.adapter.CommonAdapter;
 import com.ql.view.base.QLActivity;
 import com.ql.view.bind.BindView;
@@ -57,6 +63,8 @@ public class MainActivity extends QLActivity {
         atyList.add(new AtyBean(TagGroupLayoutActivity.class));
         atyList.add(new AtyBean(AutoTextActivity.class));
         atyList.add(new AtyBean(RecyclerViewActivity.class));
+        atyList.add(new AtyBean(DataPickerActivity.class));
+        atyList.add(new AtyBean(HartViewActivity.class));
 
 
     }

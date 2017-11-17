@@ -15,12 +15,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".SystemBarActivity" />
-        <activity android:name=".NavActivity" />
-        <activity android:name=".TagGroupLayoutActivity" />
-        <activity android:name=".LabelTextViewActivity" />
-        <activity android:name=".AutoTextActivity"></activity>
-        <activity android:name=".RecyclerViewActivity"></activity>
+        <activity android:name=".function.SystemBarActivity" />
+        <activity android:name=".function.NavActivity" />
+        <activity android:name=".function.TagGroupLayoutActivity" />
+        <activity android:name=".function.LabelTextViewActivity" />
+        <activity android:name=".function.AutoTextActivity" />
+        <activity android:name=".function.RecyclerViewActivity" />
+        <activity android:name=".function.DataPickerActivity" />
+        <activity android:name=".function.HartViewActivity"></activity>
     </application>
 
 </manifest>
