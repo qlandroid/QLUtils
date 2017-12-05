@@ -32,8 +32,9 @@ dependencies {
     })
     compile 'com.android.support:appcompat-v7:25.3.1'
     testCompile 'junit:junit:4.12'
-    compile project(':qlview')
     //RecyclerView的适配器
     //http://www.jianshu.com/p/b343fcff51b0
-
+    compile project(':qlview')
+    //https://github.com/lecho/hellocharts-android
+    compile 'com.github.lecho:hellocharts-android:v1.5.8'
 }
