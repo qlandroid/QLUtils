@@ -28,5 +28,6 @@ public class ExpandableTextViewActivity extends QLBindLayoutActivity {
             }
         });
         tvGroup.setText(getString(R.string.dummy_text1));
+
     }
 }
