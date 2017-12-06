@@ -10,6 +10,7 @@ import com.ql.view.base.QLActivity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import lecho.lib.hellocharts.gesture.ContainerScrollType;
 import lecho.lib.hellocharts.gesture.ZoomType;
@@ -24,17 +25,22 @@ import lecho.lib.hellocharts.view.LineChartView;
 public class HelloChartsActivity extends QLActivity {
 
     private LineChartView lineChart;
-    String[] weeks = {"周一","周二","周三","周四","周五","周六","周日"};//X轴的标注
-    int[] weather = {9,7,6,7,8,6,8};//图表的数据
+    String[] weeks = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13"};//X轴的标注
+    int[] weather = new int[weeks.length];//图表的数据
     private List<PointValue> mPointValues = new ArrayList<PointValue>();
     private List<AxisValue> mAxisValues = new ArrayList<AxisValue>();
-    Handler mHandler = new Handler(){
+    Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-
+            resetWeater();
+            getAxisLables();//获取x轴的标注
+            getAxisPoints();//获取坐标点
+            initLineChart();//初始化
+            mHandler.sendEmptyMessageDelayed(1, 600);
         }
     };
+
     @Override
     protected void createView() {
         setContentView(R.layout.activity_hello_charts);
@@ -43,16 +49,18 @@ public class HelloChartsActivity extends QLActivity {
     @Override
     public void initView() {
         super.initView();
-        lineChart = (LineChartView)findViewById(R.id.chart);
+        lineChart = (LineChartView) findViewById(R.id.chart);
 
         getAxisLables();//获取x轴的标注
         getAxisPoints();//获取坐标点
         initLineChart();//初始化
+        mHandler.sendEmptyMessageDelayed(1, 600);
     }
+
     /**
      * 初始化LineChart的一些设置
      */
-    private void initLineChart(){
+    private void initLineChart() {
         Line line = new Line(mPointValues).setColor(Color.WHITE).setCubic(false);  //折线的颜色
         List<Line> lines = new ArrayList<Line>();
         line.setShape(ValueShape.CIRCLE);//折线图上每个数据点的形状  这里是圆形 （有三种 ：ValueShape.SQUARE  ValueShape.CIRCLE  ValueShape.SQUARE）
@@ -97,7 +105,7 @@ public class HelloChartsActivity extends QLActivity {
     /**
      * X 轴的显示
      */
-    private void getAxisLables(){
+    private void getAxisLables() {
         for (int i = 0; i < weeks.length; i++) {
             mAxisValues.add(new AxisValue(i).setLabel(weeks[i]));
         }
@@ -106,10 +114,23 @@ public class HelloChartsActivity extends QLActivity {
     /**
      * 图表的每个点的显示
      */
-    private void getAxisPoints(){
+    private void getAxisPoints() {
         for (int i = 0; i < weather.length; i++) {
             mPointValues.add(new PointValue(i, weather[i]));
         }
     }
+
+    private void resetWeater() {
+        mPointValues.clear();
+        mAxisValues.clear();
+        int last = 0;
+        for (int i = weather.length - 1; i >= 1; i--) {
+            weather[i] = weather[i - 1];
+        }
+        Random random = new Random();
+        weather[0] = random.nextInt(9) + 1;
+
+    }
+
 
 }
