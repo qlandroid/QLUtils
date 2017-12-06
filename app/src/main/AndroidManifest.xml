@@ -43,7 +43,8 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".function.ExpandableTextViewActivity"></activity>
+        <activity android:name=".function.ExpandableTextViewActivity" />
+        <activity android:name=".function.MoveModuleActivity"></activity>
     </application>
 
 </manifest>

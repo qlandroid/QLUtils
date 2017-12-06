@@ -10,6 +10,7 @@ import com.ql.utils.qlutils.function.ExpandableTextViewActivity;
 import com.ql.utils.qlutils.function.HartSurfaceActivity;
 import com.ql.utils.qlutils.function.HartViewActivity;
 import com.ql.utils.qlutils.function.HelloChartsActivity;
+import com.ql.utils.qlutils.function.MoveModuleActivity;
 import com.ql.utils.qlutils.function.NavActivity;
 import com.ql.utils.qlutils.function.RecyclerViewActivity;
 import com.ql.utils.qlutils.function.SystemBarActivity;
@@ -73,6 +74,7 @@ public class MainActivity extends QLActivity {
         atyList.add(new AtyBean(DecodeActivity.class));
         atyList.add(new AtyBean(HelloChartsActivity.class));
         atyList.add(new AtyBean(ExpandableTextViewActivity.class));
+        atyList.add(new AtyBean(MoveModuleActivity.class));
 
 
     }
