@@ -63,17 +63,17 @@ public class MainActivity extends QLActivity {
     }
 
     private void addActivity() {
-        atyList.add(new AtyBean(SystemBarActivity.class));
-        atyList.add(new AtyBean(NavActivity.class));
+       /* atyList.add(new AtyBean(SystemBarActivity.class));
+        atycList.add(new AtyBean(NavActivity.class));
         atyList.add(new AtyBean(TagGroupLayoutActivity.class));
         atyList.add(new AtyBean(AutoTextActivity.class));
-        atyList.add(new AtyBean(RecyclerViewActivity.class));
+        atyList.add(new AtyBean(RecyclerViewAtivity.class));
         atyList.add(new AtyBean(DataPickerActivity.class));
         atyList.add(new AtyBean(HartViewActivity.class));
         atyList.add(new AtyBean(VibrationActivity.class));
         atyList.add(new AtyBean(DecodeActivity.class));
         atyList.add(new AtyBean(HelloChartsActivity.class));
-        atyList.add(new AtyBean(ExpandableTextViewActivity.class));
+        atyList.add(new AtyBean(ExpandableTextViewActivity.class));*/
         atyList.add(new AtyBean(MoveModuleActivity.class));
 
 

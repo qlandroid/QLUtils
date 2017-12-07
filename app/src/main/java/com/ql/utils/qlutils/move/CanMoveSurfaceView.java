@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PointF;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -11,7 +12,6 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.view.View;
 
 import com.ql.view.utils.ToastUtils;
 
@@ -33,6 +33,9 @@ public class CanMoveSurfaceView extends SurfaceView implements SurfaceHolder.Cal
     private Thread mDrawThread;
 
     private OperateParams mOperateParams;
+
+    private MoveParams mMoveParams;
+    private ScaleParams mScaleParams;
 
     private Paint paint;
 
@@ -60,22 +63,86 @@ public class CanMoveSurfaceView extends SurfaceView implements SurfaceHolder.Cal
         mSurfaceHolder.addCallback(this);
         mDrawThread = new Thread(this);
         mOperateParams = new OperateParams();
+        mScaleParams = new ScaleParams();
+
+        setFocusableInTouchMode(true);
 
         mScaleGestureDetector = new ScaleGestureDetector(getContext(), this);
         mGestureDetector = new GestureDetector(getContext(), new ZoomGesture());
         paint = new Paint();
+
+        mMoveParams = new MoveParams();
     }
+
+    private float lastX, lastY;
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+
         if (mGestureDetector.onTouchEvent(event)) {
             return true;
         }
-        if (mScaleGestureDetector.onTouchEvent(event)) {
-            return true;
+        int pointerCount = event.getPointerCount();
+        Log.i(TAG, "onTouchEvent: 手指的数量 -->" + pointerCount);
+        mScaleGestureDetector.onTouchEvent(event);
+        //多指头操作
+        //单指操作
+        switch (event.getAction() & MotionEvent.ACTION_MASK) {
+            case MotionEvent.ACTION_DOWN:
+                mScaleParams.setOperateScale(false);
+                //第一个手指
+                lastX = event.getX();
+                lastY = event.getY();
+                break;
+            case MotionEvent.ACTION_MOVE:
+                float moveX = event.getX() - lastX;
+                float moveY = event.getY() - lastY;
+                lastX = event.getX();
+                lastY = event.getY();
+
+                if (mScaleParams.isOperateScale()) {
+                    //当前是双指操作
+                    if (pointerCount >= 2) {
+                        PointF middle = mScaleParams.middle(event);
+                        mScaleParams.setMiddle(middle);
+                        if (middle != null && mScaleParams.isOperateScale() && (mScaleParams.getScaleFactor() > 0.00004)) {
+                            if (!mScaleParams.isScaleChange()) {
+                                break;
+                            }
+                            float moveX_center = middle.x - middle.x * mScaleParams.getScaleFactor();
+                            float moveY_center = middle.y - middle.y * mScaleParams.getScaleFactor();
+                            mMoveParams.addMove(moveX_center, moveY_center);
+                            //每次计算完毕后， 记录这次操作的放大因数，解决当手指不动时，继续计算
+                            mScaleParams.setLastScale(mScaleParams.getScale());
+                        }
+                    }
+
+                } else if (!mScaleParams.isOperateScale()) {
+                    mMoveParams.addMove(moveX, moveY);
+                    Log.i(TAG, "onTouchEvent: moveX " + mMoveParams.getMoveX() + ", moveY = " + mMoveParams.getMoveY());
+                }
+                break;
+            case MotionEvent.ACTION_UP:
+                break;
+            case MotionEvent.ACTION_POINTER_DOWN:
+                //第二个手指出现;
+                double distance = mScaleParams.distance(event);
+                if (distance > 10f) {
+                    Log.i(TAG, "onTouchEvent: 第二手指， 可以获得到 两个手指的中点坐标");
+                    PointF middle = mScaleParams.middle(event);
+                    mScaleParams.setMiddle(middle);
+                    mScaleParams.setOperateScale(true);
+                }
+                break;
+            default:
         }
-        return super.onTouchEvent(event);
+
+
+        mScaleParams.setMiddle(null);
+
+        return true;
     }
+
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
@@ -109,7 +176,7 @@ public class CanMoveSurfaceView extends SurfaceView implements SurfaceHolder.Cal
             try {
                 synchronized (CanMoveSurfaceView.class) {
 
-                    c = mSurfaceHolder.lockCanvas(null);
+                    c = mSurfaceHolder.lockCanvas();
                     doDraw(c);
                     //通过它来控制帧数执行一次绘制后休息50ms
                     Thread.sleep(50);
@@ -117,7 +184,9 @@ public class CanMoveSurfaceView extends SurfaceView implements SurfaceHolder.Cal
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {
-                mSurfaceHolder.unlockCanvasAndPost(c);
+                if (c != null) {
+                    mSurfaceHolder.unlockCanvasAndPost(c);
+                }
             }
 
         }
@@ -129,18 +198,24 @@ public class CanMoveSurfaceView extends SurfaceView implements SurfaceHolder.Cal
      * @param canvas
      */
     private void doDraw(Canvas canvas) throws Exception {
+        if (canvas == null) {
+            return;
+        }
         canvas.drawColor(Color.WHITE);
+        String nowScale = String.format("当前放大倍数 %.6f", mScaleParams.getScale());
+        paint.setColor(Color.RED);
+        paint.setTextSize(50);
+        canvas.drawText(nowScale, 70, 70, paint);
 
         List<Module> modules = mOperateParams.getModules();
         if (modules == null) {
             return;
         }
         for (Module module : modules) {
-            int scale = mOperateParams.getScale();
-            int x = module.getX() * scale;
-            int endX = module.getEndX() * scale;
-            int y = module.getY() * scale;
-            int endY = module.getEndY() * scale;
+            float x = getXScaleAndMoveAfter(module.getX());
+            float endX = getXScaleAndMoveAfter(module.getEndX());
+            float y = getYScaleAndMoveAfter(module.getY());
+            float endY = getYScaleAndMoveAfter(module.getEndY());
 
             paint.setColor(module.getColor());
             if (paint.getStyle() != Paint.Style.FILL) {
@@ -148,6 +223,40 @@ public class CanMoveSurfaceView extends SurfaceView implements SurfaceHolder.Cal
             }
             canvas.drawRect(x, y, endX, endY, paint);
         }
+    }
+
+    /**
+     * 获得点击模块
+     *
+     * @param x 当前屏幕点击的  y 点
+     * @param y 当前屏幕点击的 y 点
+     * @return
+     */
+    private Module checkMouleArea(float x, float y) {
+        Module module = null;
+
+
+        return module;
+    }
+
+    /**
+     * 纵坐标上，经过放大，移动 后的 虚拟坐标。
+     *
+     * @param y
+     * @return
+     */
+    private float getYScaleAndMoveAfter(int y) {
+        return y * mScaleParams.getScale() + mMoveParams.getMoveY();
+    }
+
+    /**
+     * 横坐标上，经过放大，移动 后的 虚拟坐标。
+     *
+     * @param x
+     * @return
+     */
+    private float getXScaleAndMoveAfter(float x) {
+        return x * mScaleParams.getScale() + mMoveParams.getMoveX();
     }
 
     public void addModules(Module module) {
@@ -192,6 +301,19 @@ public class CanMoveSurfaceView extends SurfaceView implements SurfaceHolder.Cal
 
     }
 
+    /**
+     * 用于判断两个模块 是否重合
+     *
+     * @param addModuleX
+     * @param addModuleEndX
+     * @param addModuleY
+     * @param addModuleEndY
+     * @param x
+     * @param endX
+     * @param y
+     * @param endY
+     * @return
+     */
     private boolean isScope(int addModuleX, int addModuleEndX, int addModuleY, int addModuleEndY, int x, int endX, int y, int endY) {
         return !((endX <= addModuleX) || (y >= addModuleEndY) || (x > addModuleEndX) || (endY < addModuleY));
     }
@@ -218,18 +340,32 @@ public class CanMoveSurfaceView extends SurfaceView implements SurfaceHolder.Cal
         detector.getPreviousSpan(); //上次
         detector.getPreviousSpanX();//上次
         detector.getPreviousSpanY();//上次
-        detector.getEventTime();    //当前事件的事件
+        detector.getEventTime();    //当前事件的时间
         detector.getTimeDelta();    //两次事件间的时间差
+        if (!mScaleParams.isOperateScale()) {
+            return false;
+        }
         float scaleFactor = detector.getScaleFactor();//与上次事件相比，得到的比例因子
         Log.i(TAG, "onScale: " + scaleFactor);
+        float scale = mScaleParams.getScale();
+        float newScale = scale * scaleFactor;
+        if (newScale > ScaleParams.SCALE_MAX) {
+            newScale = ScaleParams.SCALE_MAX;
+            scaleFactor = newScale / scale;
+        } else if (newScale < ScaleParams.SCALE_MIN) {
+            newScale = ScaleParams.SCALE_MIN;
+            scaleFactor = newScale / scale;
+        }
 
+        mScaleParams.setScale(newScale);
+        mScaleParams.setScaleFactor(scaleFactor);
 
         return true;
     }
 
     @Override
     public boolean onScaleBegin(ScaleGestureDetector detector) {
-        return false;
+        return true;
     }
 
     @Override

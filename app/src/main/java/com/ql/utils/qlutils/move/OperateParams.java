@@ -13,28 +13,18 @@ import java.util.List;
  */
 
 public class OperateParams {
-    public static final int SCALE_NORMAL = 1;
+
     private List<Module> modules;
     private int moveStatus;
 
-    private int scale;//当前的放大倍数；
+
+
 
     private Module operateModule;//当前需要移动的 模块
 
     private boolean showBox; //内部放置需要移动module模块
 
 
-    public OperateParams() {
-        scale = SCALE_NORMAL;
-    }
-
-    public int getScale() {
-        return scale;
-    }
-
-    public void setScale(int scale) {
-        this.scale = scale;
-    }
 
     public List<Module> getModules() {
         return modules;
@@ -67,4 +57,5 @@ public class OperateParams {
     public void setShowBox(boolean showBox) {
         this.showBox = showBox;
     }
+
 }
