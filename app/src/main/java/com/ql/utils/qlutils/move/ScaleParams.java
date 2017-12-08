@@ -67,14 +67,18 @@ public class ScaleParams {
     }
 
 
-    // 计算两个触摸点的中点
+    /**
+     * 计算两个触摸点的中点
+     */
     public PointF middle(MotionEvent event) {
         float x = event.getX(0) + event.getX(1);
         float y = event.getY(0) + event.getY(1);
         return new PointF(x / 2, y / 2);
     }
 
-    // 计算两个触摸点之间的距离
+    /**
+     * 计算两个触摸点之间的距离
+     */
     public double distance(MotionEvent event) {
         float x = event.getX(0) - event.getX(1);
         float y = event.getY(0) - event.getY(1);

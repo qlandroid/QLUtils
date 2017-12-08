@@ -20,11 +20,7 @@ public class ExampleUnitTest {
 
     @Test
     public void testMapIntegerKey(){
-        Map<Integer,Integer> map = new HashMap<>();
-
-        map.put(1,2);
-
-        Integer integer = map.get(1);
-        System.out.print(integer);
+        float f = Float.MAX_VALUE;
+        System.out.print((int) f);
     }
 }

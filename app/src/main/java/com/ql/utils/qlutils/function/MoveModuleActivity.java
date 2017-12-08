@@ -4,10 +4,12 @@ import android.graphics.Color;
 import android.support.annotation.LayoutRes;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 
 import com.ql.utils.qlutils.R;
 import com.ql.utils.qlutils.move.CanMoveSurfaceView;
 import com.ql.utils.qlutils.move.Module;
+import com.ql.utils.qlutils.move.MoveStatus;
 import com.ql.view.Layout;
 import com.ql.view.base.QLBindLayoutActivity;
 import com.ql.view.bind.BindView;
@@ -27,10 +29,10 @@ public class MoveModuleActivity extends QLBindLayoutActivity {
 
         addModule();
 
+        canMoveSurfaceView.setStatus(MoveStatus.MOVE);
     }
 
     private void addModule() {
-
         canMoveSurfaceView.addModules(createModule(12, 12, 100, 100));
         canMoveSurfaceView.addModules(createModule(90, 90, 300, 300));
         canMoveSurfaceView.addModules(createModule(102, 130, 500, 500));
@@ -50,5 +52,14 @@ public class MoveModuleActivity extends QLBindLayoutActivity {
         module.setColor(colors[colorIndex]);
         colorIndex++;
         return module;
+    }
+
+
+    public void onMoveModule(View view) {
+        canMoveSurfaceView.setStatus(MoveStatus.MOVE_MODULE);
+    }
+
+    public void onCancelMoveModule(View view) {
+        canMoveSurfaceView.setStatus(MoveStatus.MOVE);
     }
 }

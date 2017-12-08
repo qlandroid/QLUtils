@@ -19,7 +19,7 @@ public class MoveStatus {
     /**
      * 当前需要做移动动作
      */
-    public static final int MOVE = 0X3333;
+    public static final int MOVE = 0X2222;
     /**
      * 移动单个模块位置
      */

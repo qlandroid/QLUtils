@@ -21,7 +21,15 @@ public class OperateParams {
 
     private boolean showBox; //内部放置需要移动module模块
 
+    private boolean isOpenCoverage = true;
 
+    public boolean isOpenCoverage() {
+        return isOpenCoverage;
+    }
+
+    public void setOpenCoverage(boolean openCoverage) {
+        isOpenCoverage = openCoverage;
+    }
 
     public List<Module> getModules() {
         return modules;
