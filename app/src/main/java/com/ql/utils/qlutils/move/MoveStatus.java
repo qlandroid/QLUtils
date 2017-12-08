@@ -12,9 +12,17 @@ package com.ql.utils.qlutils.move;
  */
 
 public class MoveStatus {
-
+    /**
+     * 当前需要做缩放动作
+     */
     public static final int SCALE = 0X2222;
+    /**
+     * 当前需要做移动动作
+     */
     public static final int MOVE = 0X3333;
+    /**
+     * 移动单个模块位置
+     */
     public static final int MOVE_MODULE = 0X444;
 
 }

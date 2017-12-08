@@ -28,7 +28,8 @@ import java.util.List;
 public class CanMoveSurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runnable, ScaleGestureDetector.OnScaleGestureListener {
     private static final String TAG = "CanMoveSurfaceView";
     private boolean running;
-
+    private int[] colors = {Color.RED, Color.YELLOW, Color.DKGRAY, Color.LTGRAY};
+    private int colorIndex;
     private SurfaceHolder mSurfaceHolder;
     private Thread mDrawThread;
 
@@ -85,10 +86,20 @@ public class CanMoveSurfaceView extends SurfaceView implements SurfaceHolder.Cal
         int pointerCount = event.getPointerCount();
         Log.i(TAG, "onTouchEvent: 手指的数量 -->" + pointerCount);
         mScaleGestureDetector.onTouchEvent(event);
+
+
         //多指头操作
         //单指操作
         switch (event.getAction() & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_DOWN:
+                Module pointInModuleArea = getPointInModuleArea(event.getX(), event.getY());
+                if (pointInModuleArea != null) {
+                    if (colorIndex >= colors.length) {
+                        colorIndex = 0;
+                    }
+                    pointInModuleArea.setColor(colors[colorIndex]);
+                    colorIndex++;
+                }
                 mScaleParams.setOperateScale(false);
                 //第一个手指
                 lastX = event.getX();
@@ -232,11 +243,23 @@ public class CanMoveSurfaceView extends SurfaceView implements SurfaceHolder.Cal
      * @param y 当前屏幕点击的 y 点
      * @return
      */
-    private Module checkMouleArea(float x, float y) {
-        Module module = null;
+    private Module getPointInModuleArea(float x, float y) {
+        Log.i(TAG, "getPointInModuleArea:相对屏幕上的点 click point = " + x + "," + y);
+        float clickX = (x - mMoveParams.getMoveX()) / mScaleParams.getScale();
+        float clickY = (y - mMoveParams.getMoveY()) / mScaleParams.getScale();
+        Log.i(TAG, "getPointInModuleArea:相对原点 click point = " + clickX + "," + clickY);
+        List<Module> modules = mOperateParams.getModules();
+        for (Module module : modules) {
+            if ((clickX > module.getX())
+                    && (clickX < module.getEndX())
+                    && (clickY > module.getY())
+                    && (clickY < module.getEndY())) {
+                //在该模块的矩形区域中
+                return module;
+            }
+        }
+        return null;
 
-
-        return module;
     }
 
     /**

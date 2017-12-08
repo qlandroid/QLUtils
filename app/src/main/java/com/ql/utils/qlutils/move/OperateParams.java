@@ -17,9 +17,6 @@ public class OperateParams {
     private List<Module> modules;
     private int moveStatus;
 
-
-
-
     private Module operateModule;//当前需要移动的 模块
 
     private boolean showBox; //内部放置需要移动module模块
