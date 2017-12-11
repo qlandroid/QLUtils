@@ -16,4 +16,16 @@ public interface IOperate {
      * @see MoveStatus 状态值
      */
     void setStatus(int status);
+
+    /**
+     * 回到原点
+     */
+    void toZero();
+
+    /**
+     * 设置当前显示的比例值
+     *
+     * @param zoom
+     */
+    void setZoom(float zoom);
 }

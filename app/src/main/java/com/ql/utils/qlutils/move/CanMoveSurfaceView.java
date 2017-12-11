@@ -111,16 +111,22 @@ public class CanMoveSurfaceView extends SurfaceView implements SurfaceHolder.Cal
                 lastX = event.getX();
                 lastY = event.getY();
                 if (mOperateParams.getMoveStatus() == MoveStatus.MOVE_MODULE) {
-                    Module pointInModuleArea = getPointInModuleArea(lastX, lastY);
-                    if (pointInModuleArea != null) {
-                        Module module = new Module(pointInModuleArea);
-                        mBox.setMoveToBoxY(0);
-                        mBox.setMoveToBoxX(0);
-                        mBox.setMoveModule(module);
-                        mOperateParams.getModules().remove(pointInModuleArea);
-                    }
-                    mOperateParams.setOperateModule(pointInModuleArea);
+                    if (moveModuleFromBox()) {
+                        //点击区域在 box  盒子中
 
+                    } else {
+                        //点击box 外的区域
+                        Module pointInModuleArea = getPointInModuleArea(lastX, lastY);
+                        if (pointInModuleArea != null) {
+                            Module module = new Module(pointInModuleArea);
+                            mBox.setMoveToBoxY(0);
+                            mBox.setMoveToBoxX(0);
+                            mBox.setMoveModule(module);
+                            mOperateParams.getModules().remove(pointInModuleArea);
+
+                        }
+                        mOperateParams.setOperateModule(pointInModuleArea);
+                    }
                 }
                 break;
             case MotionEvent.ACTION_MOVE:
@@ -133,7 +139,7 @@ public class CanMoveSurfaceView extends SurfaceView implements SurfaceHolder.Cal
                     toMoveOperate(moveX, moveY);
                 } else if (mOperateParams.getMoveStatus() == MoveStatus.MOVE_MODULE) {
 
-                    moveModuleFromBox();
+                    // moveModuleFromBox();
 
                     float moveToBoxX = mBox.getMoveToBoxX();
                     moveToBoxX += moveX;
@@ -165,6 +171,8 @@ public class CanMoveSurfaceView extends SurfaceView implements SurfaceHolder.Cal
                         mOperateParams.getModules().add(operateModule);
                         mBox.setMoveModule(null);
                     }
+                    mBox.setMoveToBoxY(0f);
+                    mBox.setMoveToBoxY(0f);
                 }
                 break;
             case MotionEvent.ACTION_POINTER_DOWN:
@@ -189,7 +197,7 @@ public class CanMoveSurfaceView extends SurfaceView implements SurfaceHolder.Cal
     /**
      * 当前移动module中，进行的操作
      */
-    private void moveModuleFromBox() {
+    private boolean moveModuleFromBox() {
         List<Module> boxSaveModule = mBox.getBoxSaveModule();
         boolean isClickModuleArea = false;//是否点击到盒子中的模型状态
         Module clickModule = null;//点击的medule
@@ -208,24 +216,27 @@ public class CanMoveSurfaceView extends SurfaceView implements SurfaceHolder.Cal
             Module module = srcModule.get(clickModuleIndex);
             //获得 当前比例下的 宽度，高度
             Module moduleMoveOut = new Module(module);
-            float scaleWidth = moduleMoveOut.getWidth() * mScaleParams.getScale();
-            float scaleHeight = moduleMoveOut.getHeight() * mScaleParams.getScale();
+            //获得当前点击 位置，在原始坐标系中的坐标
+            float clickSrcX = getSrcX(lastX);
+            float clickSrcY = getSrcY(lastY);
 
-            moduleMoveOut.setHeight(scaleHeight);
-            moduleMoveOut.setWidth(scaleWidth);
-            float moveOutX = (clickModule.getX() + clickModule.getEndX()) / 2 - scaleWidth / 2;
-            float moveOutEndX = moveOutX + scaleWidth;
+            float moduleMoveSrcX = clickSrcX - moduleMoveOut.getWidth() / 2;
+            float moduleMoveSrcEndX = moduleMoveSrcX + moduleMoveOut.getWidth();
+            float moduleMoveSrcY = clickSrcY - moduleMoveOut.getHeight() / 2;
+            float moduleMoveSrcEndY = moduleMoveSrcY + moduleMoveOut.getWidth();
 
-            float moveOutY = (clickModule.getY() + clickModule.getEndY()) / 2 - scaleHeight / 2;
-            float moveOutEndY = moveOutY + scaleHeight;
-            moduleMoveOut.setX(moveOutX);
-            moduleMoveOut.setEndX(moveOutEndX);
-            moduleMoveOut.setY(moveOutY);
-            moduleMoveOut.setEndY(moveOutEndY);
+            moduleMoveOut.setX(moduleMoveSrcX);
+            moduleMoveOut.setEndX(moduleMoveSrcEndX);
+
+            moduleMoveOut.setY(moduleMoveSrcY);
+            moduleMoveOut.setEndY(moduleMoveSrcEndY);
+
             mBox.setMoveModule(moduleMoveOut);
 
             mBox.setHideModuleIndex(clickModuleIndex);
+            return true;
         }
+        return false;
     }
 
     /**
@@ -247,23 +258,30 @@ public class CanMoveSurfaceView extends SurfaceView implements SurfaceHolder.Cal
 
         //当前在从 盒子中移除 module 操作;
         Module moveModule = mBox.getMoveModule();
-        Module srcMoveModule = new Module(moveModule);
-        srcMoveModule.setX(getSrcX(moveModule.getX()));
-        srcMoveModule.setEndX(getSrcX(moveModule.getEndX()));
-        srcMoveModule.setY(getSrcY(moveModule.getY()));
-        srcMoveModule.setEndY(getSrcY(moveModule.getY()));
+        Module srcMoveModule = new Module(mBox.getSrcModule().get(mBox.getHideModuleIndex()));
+
+
+        float skewingX = mBox.getMoveToBoxX() / mScaleParams.getScale();
+        srcMoveModule.setX(moveModule.getX() + skewingX);
+        srcMoveModule.setEndX(moveModule.getEndX() + skewingX);
+
+        float skewingY = mBox.getMoveToBoxY() / mScaleParams.getScale();
+        srcMoveModule.setY(moveModule.getY() + skewingY);
+        srcMoveModule.setEndY(moveModule.getEndY() + skewingY);
+
+
         if ((isCanAddModule(srcMoveModule)) || mOperateParams.isOpenCoverage()) {
-            //不重合 或没有开启 重合位置不可添加
-            mBoxOperate.removeModule(mBox.getHideModuleIndex(), mBox);
-            mBox.clearHideModuleIndex();
+            //不重合 或没有开启 重合位置不可添加+---
+            mBoxOperate.removeModuleFromBox(mBox.getHideModuleIndex(), mBox);
             List<Module> modules = mOperateParams.getModules();
             modules.add(srcMoveModule);
 
-        } else {
-            //当前重合状态
-            mBox.clearHideModuleIndex();
-            mBox.setMoveModule(null);
         }
+        mBox.clearHideModuleIndex();
+        mBox.setMoveModule(null);
+        mBox.setMoveToBoxY(0f);
+        mBox.setMoveToBoxX(0f);
+
 
     }
 
@@ -341,7 +359,7 @@ public class CanMoveSurfaceView extends SurfaceView implements SurfaceHolder.Cal
                     c = mSurfaceHolder.lockCanvas();
                     doDraw(c);
                     //通过它来控制帧数执行一次绘制后休息50ms
-                    Thread.sleep(50);
+                    Thread.sleep(30);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -394,6 +412,16 @@ public class CanMoveSurfaceView extends SurfaceView implements SurfaceHolder.Cal
                 drawModuleMoveToBox(canvas, operateModule, mBox);
             }
         }
+        /**
+         * 绘制可以 点击放大，缩小的按钮
+         */
+        drawZoomButton(canvas);
+
+    }
+
+    private void drawZoomButton(Canvas canvas) {
+
+
     }
 
     private void drawBox(Canvas canvas) {
@@ -584,10 +612,7 @@ public class CanMoveSurfaceView extends SurfaceView implements SurfaceHolder.Cal
             if (isScope(addModuleX, addModuleEndX, addModuleY, addModuleEndY, x, endX, y, endY)) {
                 return false;
             }
-
-
         }
-
         return true;
 
     }
@@ -657,6 +682,17 @@ public class CanMoveSurfaceView extends SurfaceView implements SurfaceHolder.Cal
     @Override
     public void setStatus(int status) {
         mOperateParams.setMoveStatus(status);
+    }
+
+    @Override
+    public void toZero() {
+        mMoveParams.setMoveY(0f);
+        mMoveParams.setMoveX(0f);
+    }
+
+    @Override
+    public void setZoom(float zoom) {
+        mScaleParams.setScale(zoom);
     }
 
 

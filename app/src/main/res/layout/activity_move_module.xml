@@ -30,6 +30,11 @@
                 android:text="模块移动"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
+            <Button
+                android:onClick="onToZero"
+                android:text="回到原点"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
         </LinearLayout>
     </HorizontalScrollView>
 </RelativeLayout>

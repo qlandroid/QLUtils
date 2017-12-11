@@ -10,20 +10,7 @@ import java.util.List;
  */
 
 public class BoxOperate {
-    /**
-     * 用于判断 该点是否在  矩形区域内
-     *
-     * @param upX
-     * @param upY
-     * @param rect
-     */
-    public <T extends RectPoint> boolean isScope(float upX, float upY, T rect) {
 
-        if ((upX > rect.getX()) && (upX < rect.getEndX()) && (upY > rect.getY()) && (upY < rect.getEndY())) {
-            return true;
-        }
-        return false;
-    }
 
     /**
      * 将模块添加到当前 盒子中
@@ -146,18 +133,25 @@ public class BoxOperate {
      * @param module
      * @param box
      */
-    public void removeModule(Module module, Box box) {
+    public void removeModuleFromBox(Module module, Box box) {
         box.getSrcModule().remove(module);
         box.getBoxSaveModule().remove(module);
     }
+
     /**
      * 将模块从盒子中移除
      *
      * @param box
      */
-    public void removeModule(int moduleIndex, Box box) {
+    public void removeModuleFromBox(int moduleIndex, Box box) {
         box.getSrcModule().remove(moduleIndex);
         box.getBoxSaveModule().remove(moduleIndex);
+        float left = box.getPaddingLeft() + box.getX();
+        for (Module module : box.getBoxSaveModule()) {
+            resetAddModuleFromBox(module, box, left);
+            module.resetSize();
+            left = +module.getWidth() + box.getItemWidth();
+        }
     }
 
 }

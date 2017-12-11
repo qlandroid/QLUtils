@@ -62,4 +62,8 @@ public class MoveModuleActivity extends QLBindLayoutActivity {
     public void onCancelMoveModule(View view) {
         canMoveSurfaceView.setStatus(MoveStatus.MOVE);
     }
+
+    public void onToZero(View view) {
+        canMoveSurfaceView.toZero();
+    }
 }

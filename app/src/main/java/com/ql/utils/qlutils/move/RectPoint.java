@@ -16,7 +16,9 @@ public class RectPoint {
     float height;
     float width;
 
-    public void resetSize(){
+    float paddingTop, paddingBottom, paddingRight, paddingLeft;
+
+    public void resetSize() {
         width = endX - x;
         height = endY - y;
     }
@@ -67,5 +69,37 @@ public class RectPoint {
 
     public void setEndY(float endY) {
         this.endY = endY;
+    }
+
+    public float getPaddingTop() {
+        return paddingTop;
+    }
+
+    public void setPaddingTop(float paddingTop) {
+        this.paddingTop = paddingTop;
+    }
+
+    public float getPaddingBottom() {
+        return paddingBottom;
+    }
+
+    public void setPaddingBottom(float paddingBottom) {
+        this.paddingBottom = paddingBottom;
+    }
+
+    public float getPaddingRight() {
+        return paddingRight;
+    }
+
+    public void setPaddingRight(float paddingRight) {
+        this.paddingRight = paddingRight;
+    }
+
+    public float getPaddingLeft() {
+        return paddingLeft;
+    }
+
+    public void setPaddingLeft(float paddingLeft) {
+        this.paddingLeft = paddingLeft;
     }
 }

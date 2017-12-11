@@ -33,7 +33,7 @@ public class Box extends RectPoint {
 
     private float itemWidth;//每个模块的间距
 
-    private float paddingTop, paddingBottom, paddingRight, paddingLeft;
+
 
     private Module moveModule;//移动 的模块，需要放在盒子内
 
@@ -50,6 +50,7 @@ public class Box extends RectPoint {
         endY = 200;
         itemWidth = 20;
         maxItemWidth = 150;
+        setPadding(20);
     }
 
     /**
@@ -163,36 +164,5 @@ public class Box extends RectPoint {
         this.itemWidth = itemWidth;
     }
 
-    public float getPaddingTop() {
-        return paddingTop;
-    }
-
-    public void setPaddingTop(float paddingTop) {
-        this.paddingTop = paddingTop;
-    }
-
-    public float getPaddingBottom() {
-        return paddingBottom;
-    }
-
-    public void setPaddingBottom(float paddingBottom) {
-        this.paddingBottom = paddingBottom;
-    }
-
-    public float getPaddingRight() {
-        return paddingRight;
-    }
-
-    public void setPaddingRight(float paddingRight) {
-        this.paddingRight = paddingRight;
-    }
-
-    public float getPaddingLeft() {
-        return paddingLeft;
-    }
-
-    public void setPaddingLeft(float paddingLeft) {
-        this.paddingLeft = paddingLeft;
-    }
 
 }
