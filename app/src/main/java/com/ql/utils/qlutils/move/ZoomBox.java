@@ -31,7 +31,13 @@ public class ZoomBox extends RectPoint {
 
     public ZoomBox() {
 
-        bigButtonHeight = smallButtonHeight = 30;
+        width = 50;
+        height = 100;
+        x = 100;
+        y = 200;
+        endX = x + width;
+        endY = y + height;
+        bigButtonHeight = smallButtonHeight = 100;
 
         divWidth = 10;
 

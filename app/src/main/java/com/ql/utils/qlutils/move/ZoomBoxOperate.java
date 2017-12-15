@@ -1,8 +1,8 @@
 package com.ql.utils.qlutils.move;
 
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
-import android.icu.text.BreakIterator;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -26,6 +26,17 @@ public class ZoomBoxOperate {
     public ZoomBoxOperate(ZoomBox zoomBox, View view) {
         this.zoomBox = zoomBox;
 
+
+        initZoomButton();
+        resetLocation();
+    }
+
+    public OnZoomListener getOnZoomListener() {
+        return mOnZoomListener;
+    }
+
+    public void setOnZoomListener(OnZoomListener l) {
+        this.mOnZoomListener = l;
     }
 
     /**
@@ -107,12 +118,13 @@ public class ZoomBoxOperate {
     private void initZoomButton() {
         Module bigModule = new Module();
         Module smallModule = new Module();
-
+        bigModule.setColor(Color.YELLOW);
+        smallModule.setColor(Color.BLACK);
         zoomBox.setToBig(bigModule);
         zoomBox.setToSmall(smallModule);
     }
 
-    private void resetLoaction() {
+    private void resetLocation() {
         Module toBig = zoomBox.getToBig();
         Module toSmall = zoomBox.getToSmall();
 
@@ -128,13 +140,26 @@ public class ZoomBoxOperate {
         float toBigY = zoomBox.getY() + zoomBox.getPaddingTop();
         float toBigEndY = toBigY + zoomBox.getBigButtonHeight();
         toBig.setY(toBigY);
-        toBig.setEndX(toBigEndY);
+        toBig.setEndY(toBigEndY);
 
         float toSmallY = toBigEndY + zoomBox.getDivWidth();
         float toSmallEndY = toSmallY + zoomBox.getSmallButtonHeight();
 
         toSmall.setY(toSmallY);
         toSmall.setEndY(toSmallEndY);
+    }
+
+    public void setZoomButtonLocation(int w, int h) {
+        int measuredWidth = w;
+        float endX = measuredWidth - 20;
+        float x = endX - zoomBox.getPaddingRight() - 200 - zoomBox.getPaddingLeft();
+        zoomBox.setEndX(endX);
+        zoomBox.setX(x);
+        float y = 30;
+        float endY = y + zoomBox.getPaddingTop() + zoomBox.getPaddingBottom() + zoomBox.getBigButtonHeight() + zoomBox.getSmallButtonHeight() + zoomBox.getDivWidth();
+        zoomBox.setY(y);
+        zoomBox.setEndY(endY);
+        resetLocation();
     }
 
     /**

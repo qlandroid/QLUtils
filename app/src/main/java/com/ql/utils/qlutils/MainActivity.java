@@ -4,7 +4,9 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.ql.utils.qlutils.animation.AnimationAActivity;
 import com.ql.utils.qlutils.function.AutoTextActivity;
+import com.ql.utils.qlutils.function.BottomLInEditTextActivity;
 import com.ql.utils.qlutils.function.DataPickerActivity;
 import com.ql.utils.qlutils.function.ExpandableTextViewActivity;
 import com.ql.utils.qlutils.function.HartSurfaceActivity;
@@ -12,10 +14,13 @@ import com.ql.utils.qlutils.function.HartViewActivity;
 import com.ql.utils.qlutils.function.HelloChartsActivity;
 import com.ql.utils.qlutils.function.MoveModuleActivity;
 import com.ql.utils.qlutils.function.NavActivity;
+import com.ql.utils.qlutils.function.RectActivity;
 import com.ql.utils.qlutils.function.RecyclerViewActivity;
+import com.ql.utils.qlutils.function.RevealEffectActivity;
 import com.ql.utils.qlutils.function.SystemBarActivity;
 import com.ql.utils.qlutils.function.TagGroupLayoutActivity;
 import com.ql.utils.qlutils.function.VibrationActivity;
+import com.ql.utils.qlutils.opengl.OpenGlActivity;
 import com.ql.view.adapter.CommonAdapter;
 import com.ql.view.base.QLActivity;
 import com.ql.view.bind.BindView;
@@ -75,6 +80,11 @@ public class MainActivity extends QLActivity {
         atyList.add(new AtyBean(HelloChartsActivity.class));
         atyList.add(new AtyBean(ExpandableTextViewActivity.class));*/
         atyList.add(new AtyBean(MoveModuleActivity.class));
+        atyList.add(new AtyBean(BottomLInEditTextActivity.class));
+        atyList.add(new AtyBean(OpenGlActivity.class));
+        atyList.add(new AtyBean(RectActivity.class));
+        atyList.add(new AtyBean(RevealEffectActivity.class));
+        atyList.add(new AtyBean(AnimationAActivity.class));
 
 
     }

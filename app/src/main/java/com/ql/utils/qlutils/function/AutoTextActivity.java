@@ -1,5 +1,7 @@
 package com.ql.utils.qlutils.function;
 
+import android.widget.EditText;
+
 import com.ql.utils.qlutils.R;
 import com.ql.view.AutoTextView;
 import com.ql.view.base.QLActivity;

@@ -25,7 +25,7 @@ import java.util.List;
  * @author ql
  */
 
-public class CanMoveSurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runnable, ScaleGestureDetector.OnScaleGestureListener, IOperate {
+public class CanMoveSurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runnable, ScaleGestureDetector.OnScaleGestureListener, IOperate, ZoomBoxOperate.OnZoomListener {
     private static final String TAG = "CanMoveSurfaceView";
     private boolean running;
     private int[] colors = {Color.RED, Color.YELLOW, Color.DKGRAY, Color.LTGRAY};
@@ -39,6 +39,9 @@ public class CanMoveSurfaceView extends SurfaceView implements SurfaceHolder.Cal
     private ScaleParams mScaleParams;
     private Box mBox;
     private BoxOperate mBoxOperate;
+
+    private ZoomBox mZoomBox;
+    private ZoomBoxOperate mZoomBoxOperate;
 
     private Paint paint;
 
@@ -71,6 +74,10 @@ public class CanMoveSurfaceView extends SurfaceView implements SurfaceHolder.Cal
         mBoxOperate = new BoxOperate();
         setFocusableInTouchMode(true);
 
+        mZoomBox = new ZoomBox();
+        mZoomBoxOperate = new ZoomBoxOperate(mZoomBox, this);
+        mZoomBoxOperate.setOnZoomListener(this);
+
         mScaleGestureDetector = new ScaleGestureDetector(getContext(), this);
         mGestureDetector = new GestureDetector(getContext(), new ZoomGesture());
         paint = new Paint();
@@ -101,6 +108,8 @@ public class CanMoveSurfaceView extends SurfaceView implements SurfaceHolder.Cal
         Log.i(TAG, "onTouchEvent: 手指的数量 -->" + pointerCount);
         mScaleGestureDetector.onTouchEvent(event);
 
+
+        mZoomBoxOperate.clickZoomArea(event, mScaleParams.getScale());
 
         //多指头操作
         //单指操作
@@ -160,7 +169,7 @@ public class CanMoveSurfaceView extends SurfaceView implements SurfaceHolder.Cal
                         operateMoveModule(event);
 
 
-                    } else if (mBoxOperate.isScope(upX, upY, mBox)) {
+                    } else if (RectUtils.isScope(upX, upY, mBox)) {
                         //当前移动的 module 是否 在当前盒子的范围区域内
                         mBoxOperate.addModule(upX, upY, mOperateParams.getOperateModule(), mBox);
                         mOperateParams.setOperateModule(null);
@@ -204,7 +213,7 @@ public class CanMoveSurfaceView extends SurfaceView implements SurfaceHolder.Cal
         int clickModuleIndex = -1;//点击盒子中module中的角标
         for (int i = 0; i < boxSaveModule.size(); i++) {
             Module module = boxSaveModule.get(i);
-            if (mBoxOperate.isScope(lastX, lastY, module)) {
+            if (RectUtils.isScope(lastX, lastY, module)) {
                 isClickModuleArea = true;
                 clickModule = module;
                 clickModuleIndex = i;
@@ -248,7 +257,7 @@ public class CanMoveSurfaceView extends SurfaceView implements SurfaceHolder.Cal
     private void operateMoveModule(MotionEvent event) {
         float upX = event.getX();
         float upY = event.getY();
-        if (mBoxOperate.isScope(upX, upY, mBox)) {
+        if (RectUtils.isScope(upX, upY, mBox)) {
             mBox.clearHideModuleIndex();
             mBox.setMoveModule(null);
             mBox.setMoveToBoxY(0f);
@@ -383,10 +392,7 @@ public class CanMoveSurfaceView extends SurfaceView implements SurfaceHolder.Cal
             return;
         }
         canvas.drawColor(Color.WHITE);
-        String nowScale = String.format("当前放大倍数 %.6f", mScaleParams.getScale());
-        paint.setColor(Color.RED);
-        paint.setTextSize(50);
-        canvas.drawText(nowScale, 70, 70, paint);
+
 
         List<Module> modules = mOperateParams.getModules();
         if (modules == null) {
@@ -405,24 +411,25 @@ public class CanMoveSurfaceView extends SurfaceView implements SurfaceHolder.Cal
          * 主要目的是临时存储，将模块位置改变
          */
         if (mOperateParams.getMoveStatus() == MoveStatus.MOVE_MODULE) {
-            drawBox(canvas);
 
             Module operateModule = mBox.getMoveModule();
             if (operateModule != null) {
                 drawModuleMoveToBox(canvas, operateModule, mBox);
             }
+
+            drawBox(canvas);
         }
-        /**
-         * 绘制可以 点击放大，缩小的按钮
-         */
-        drawZoomButton(canvas);
 
+        //绘制 缩放按钮
+        mZoomBoxOperate.drawZoomButton(canvas, paint);
+
+
+        String nowScale = String.format("当前放大倍数 %.6f", mScaleParams.getScale());
+        paint.setColor(Color.RED);
+        paint.setTextSize(24);
+        canvas.drawText(nowScale, 70, 70, paint);
     }
 
-    private void drawZoomButton(Canvas canvas) {
-
-
-    }
 
     private void drawBox(Canvas canvas) {
         //绘制盒子 的背景
@@ -448,6 +455,7 @@ public class CanMoveSurfaceView extends SurfaceView implements SurfaceHolder.Cal
 
             drawModuleSrc(canvas, module);
         }
+
 
     }
 
@@ -695,6 +703,42 @@ public class CanMoveSurfaceView extends SurfaceView implements SurfaceHolder.Cal
         mScaleParams.setScale(zoom);
     }
 
+    @Override
+    public void onZoom(boolean isToBig, float newZoom, float oldZoom) {
+        if (newZoom > ScaleParams.SCALE_MAX) {
+            newZoom = ScaleParams.SCALE_MAX;
+        } else if (newZoom < ScaleParams.SCALE_MIN) {
+            newZoom = ScaleParams.SCALE_MIN;
+        }
+        //当前进行缩放， 是按照当前屏幕中点进行缩放
+        int screenX = getMeasuredWidth() / 2;
+        int screenY = getMeasuredHeight() / 2;
+        float oldCenterX = screenX + mMoveParams.getMoveX();
+
+        float oldCenterY = screenY + mMoveParams.getMoveY();
+        float srcCenterX = getSrcX(oldCenterX);
+        float srcCenterY = getSrcY(oldCenterY);
+        mScaleParams.setScale(newZoom);
+
+        float newMoveX = srcCenterX * newZoom - screenX;
+        float newMoveY = srcCenterY * newZoom - screenY;
+        mMoveParams.setMoveX(newMoveX);
+        mMoveParams.setMoveY(newMoveY);
+
+    }
+
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+
+    }
+
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+        mZoomBoxOperate.setZoomButtonLocation(w, h);
+    }
 
     class ZoomGesture extends GestureDetector.SimpleOnGestureListener {//单手指操作
 
